@@ -12,11 +12,15 @@
   <arg name="calibration" default="$(find velodyne_pointcloud)/params/VLP16db.yaml"/>
   <arg name="min_range" default="0.4" />
   <arg name="max_range" default="130.0" />
+  <arg name="port" default="2367" />
+  <arg name="device_ip" default="192.168.1.201" />
 
   <!-- start nodelet manager and driver nodelets -->
   <include file="$(find velodyne_driver)/launch/nodelet_manager.launch">
     <arg name="model" value="VLP16"/>
     <arg name="pcap" value="$(arg pcap)"/>
+    <arg name="port" value="$(arg port)"/>
+    <arg name="device_ip" value="$(arg device_ip)"/>
   </include>
 
   <!-- start cloud nodelet -->

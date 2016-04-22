@@ -80,7 +80,8 @@ VelodyneDriver::VelodyneDriver(ros::NodeHandle node,
 
   int udp_port;
   private_nh.param("port", udp_port, (int) DATA_PORT_NUMBER);
-
+  
+  ROS_ERROR_STREAM("Using port: "<<udp_port);
   // initialize diagnostics
   diagnostics_.setHardwareID(deviceName);
   const double diag_freq = packet_rate/config_.npackets;

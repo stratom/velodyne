@@ -163,6 +163,7 @@ namespace velodyne_driver
               }
           } while ((fds[0].revents & POLLIN) == 0);
 
+
         // Receive packets that should now be available from the
         // socket using a blocking read.
         ssize_t nbytes = recvfrom(sockfd_, &pkt->data[0],
@@ -184,11 +185,27 @@ namespace velodyne_driver
             // read successful,
             // if packet is not from the lidar scanner we selected by IP,
             // continue otherwise we are done
-            if(devip_str_ != ""
-               && sender_address.sin_addr.s_addr != devip_.s_addr)
-              continue;
+	    //inet_addr();
+	    struct in_addr test_addr;
+	    if(devip_str_ !="")
+	      {
+		int ret_val = inet_aton(devip_str_.c_str(),&test_addr);
+	    //	    if(devip_str_ != ""
+	    //	       && sender_address.sin_addr.s_addr != devip_.s_addr)
+		if(test_addr.s_addr!=sender_address.sin_addr.s_addr)
+		  {
+		    ROS_ERROR("test_addr = %u : devip_str = %s : devip = %u : sender_ip = %u",test_addr.s_addr,devip_str_.c_str(),devip_.s_addr,sender_address.sin_addr.s_addr);
+		    continue;
+		  }
+		else
+		  {
+		    break;
+		  }
+	      }
             else
-              break; //done
+	      {
+		break; //done
+	      }
           }
 
         ROS_DEBUG_STREAM("incomplete Velodyne packet read: "
@@ -199,7 +216,6 @@ namespace velodyne_driver
     // estimate when the scan occurred.
     double time2 = ros::Time::now().toSec();
     pkt->stamp = ros::Time((time2 + time1) / 2.0);
-
     return 0;
   }
 
